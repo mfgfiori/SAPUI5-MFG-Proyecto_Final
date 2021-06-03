@@ -1,0 +1,26 @@
+{
+    "TypeEmployee" : [
+        {          
+            "Type": "0",
+            "DescEmployee": "Interno",
+            "NetSalary": 24000,
+            "MinSalary":12000,
+            "MaxSalary":80000
+        },
+        {            
+            "Type": "1",
+            "DescEmployee": "Autónomo",
+            "NetSalary": 400,
+            "MinSalary":100,
+            "MaxSalary":2000
+        },
+
+        {
+            "Type": "2",
+            "DescEmployee": "Gerente",
+            "NetSalary": 70000,
+            "MinSalary":50000,
+            "MaxSalary":200000
+        }    
+    ]
+}

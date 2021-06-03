@@ -1,0 +1,12 @@
+<mvc:View controllerName="projectfinal.Employees.controller.ShowEmployees" 
+          xmlns:mvc="sap.ui.core.mvc" 
+          displayBlock="true" 
+          xmlns="sap.m"
+          xmlns:l="sap.ui.layout"
+	      xmlns:core="sap.ui.core">
+        <Page id="page" title="{i18n>title}">
+            <content>
+            <Text text="Functional 'Show Employees'. COMING SOON!! Code in building..."/>
+            </content>
+        </Page>
+</mvc:View>    

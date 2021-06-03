@@ -1,0 +1,87 @@
+<mvc:View controllerName="projectfinal.Employees.controller.CreateEmployee" 
+          xmlns:mvc="sap.ui.core.mvc" 
+          displayBlock="true" 
+          xmlns="sap.m"
+          xmlns:l="sap.ui.layout"
+	      xmlns:core="sap.ui.core"
+          xmlns:form="sap.ui.layout.form">
+    <Page id="page" title="{i18n>titleCreateEmployee}">
+        <content>
+            <NavContainer id="wizardNavContainer">
+                <pages>
+                    <Page id="wizardContentPage" showHeader="false">
+                        <content>
+                            <Wizard id="CreateEmployeeWizard" class="sapUiResponsivePadding--header sapUiResponsivePadding--content"
+                                    complete="wizardCompletedHandler">
+                                <WizardStep id="TypeEmployeeStep"
+                                            title="{i18n>typeEmployee}"
+                                            validated="false">
+                                    <MessageStrip class="sapUiSmallMarginBottom"
+                                            text="{i18n>infoEmployeeStep1}"
+                                            showIcon="true"/>                                       
+                                    <FlexBox height="100px" alignItems="Center" justifyContent="Center">
+                                        <Button id="btnInterno"  text="{i18n>typeEmployee0}" press="toNextStep" class="sapUiSmallMarginEnd">                                                    
+                                                <customData>
+                                                    <core:CustomData key="typeEmpl" value="0" ></core:CustomData>                                                                                                 
+                                                </customData>                                 
+                                        </Button>        
+                                        <Button id="btnAutonomo" text="{i18n>typeEmployee1}" press="toNextStep" class="sapUiSmallMarginEnd" >
+                                                <customData>
+                                                    <core:CustomData key="typeEmpl" value="1" ></core:CustomData>                                                                                                 
+                                                </customData> 
+                                        </Button>         
+                                        <Button id="btnGerente"  text="{i18n>typeEmployee2}" press="toNextStep" class="sapUiSmallMarginEnd">
+                                               <customData>
+                                                    <core:CustomData key="typeEmpl" value="2" ></core:CustomData>                                                                                                 
+                                                </customData> 
+                                        </Button>
+                                    </FlexBox>
+                                </WizardStep>
+                                <WizardStep id="DataEmployeeStep"
+										validated="false"
+										title="{i18n>dataEmployee}"
+										activate="additionalInfoValidation">                                                                        
+								    <MessageStrip class="sapUiSmallMarginBottom" text="{i18n>infoEmployeeStep2}" showIcon="true"/>
+                                    <form:SimpleForm editable="true">
+                                        <Label text="{i18n>firstName}" required="true"/>
+                                        <Input valueState="{odataEmployee>/firstNameState}" change="additionalInfoValidation" value="{odataEmployee>/firstName}"/>  
+                                        <Label text="{i18n>lastName}" required="true"/>
+                                        <Input valueState="{odataEmployee>/lastNameState}" change="additionalInfoValidation" value="{odataEmployee>/lastName}"/>  
+                                        <Label text="{= ${odataEmployee>/type} === '1' ? ${i18n>CIF} : ${i18n>DNI}}" required="true"/>
+										<Input value="{odataEmployee>/dni}" valueState="{odataEmployee>/dniState}" change="validateDNI"></Input>   
+	                                    <Label text="{= ${odataEmployee>/type} === '1' ? ${i18n>priceDay} : ${i18n>salaryBrut}}"/>                                  
+                                        <Slider value="{odataEmployee>/netSalary}"
+                                                min="{odataEmployee>/salaryMin}" 
+                                                max="{odataEmployee>/salaryMax}"
+                                                step="100" inputsAsTooltips="true" showAdvancedTooltip="true" enableTickmarks="true"
+                                                width="100%" progress="true" class="sapUiSmallMarginBottom">
+                                                <ResponsiveScale tickmarksBetweenLabels="100"/>
+                                        </Slider>                          
+                                        <Label text="{i18n>creationDate}" required="true"/>                                        
+										<DatePicker valueState="{odataEmployee>/creationDateState}" change="additionalInfoValidation" dateValue="{odataEmployee>/creationDate}"/>
+                                    </form:SimpleForm>    
+							    </WizardStep>
+                                <WizardStep id="OptionalInfoStep"
+                                            validated="true"
+                                            activate="optionalStepActivation"
+                                            title="{i18n>optionalInfo}">
+                                    <MessageStrip class="sapUiSmallMarginBottom"
+                                            text="{i18n>infoEmployeeStep3}"
+                                            showIcon="true"/>
+                                    <Label text="{i18n>comment}" width="100%"></Label>
+                                    <TextArea value="" width="100%"></TextArea>                                
+                                </WizardStep>
+                            </Wizard>
+                        </content>
+                        <footer>
+                            <OverflowToolbar>
+                                <ToolbarSpacer/>
+                                <Button text="Cancel" press="onCancel"/>
+                            </OverflowToolbar>
+                        </footer> 
+                    </Page>
+                </pages>
+            </NavContainer>          
+        </content>                  
+    </Page>        
+</mvc:View>            

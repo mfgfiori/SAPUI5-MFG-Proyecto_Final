@@ -1,0 +1,35 @@
+<mvc:View controllerName="projectfinal.Employees.controller.MainView" 
+          xmlns:mvc="sap.ui.core.mvc" 
+          displayBlock="true" 
+          xmlns="sap.m"
+          xmlns:l="sap.ui.layout"
+	      xmlns:core="sap.ui.core">
+        <Page id="page" title="{i18n>title}">
+            <content>
+                <Panel expandable="true" expanded="true" headerText="{i18n>titleEmpleados}" width="auto" class="sapUiResponsiveMargin">
+                    <content>
+                        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop" 
+                                        headerImage="sap-icon://add-employee"
+                                        press="onCreateEmployee" >
+                            <TileContent footer="{i18n>btnCreateEmployee}"/>                                       
+                        </GenericTile>
+                        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop" 
+                                        headerImage="sap-icon://employee-lookup"
+                                        press="onShowEmployees" >
+                            <TileContent footer="{i18n>btnShowEmployee}"/>                                                                        
+                        </GenericTile>
+                    </content>
+                </Panel>
+                <Panel expandable="true" expanded="true" headerText="{i18n>titlePedidos}" width="auto" class="sapUiResponsiveMargin">
+                    <content>
+                        <GenericTile id="btnSignOrder"
+                                     class="sapUiTinyMarginBegin sapUiTinyMarginTop" 
+                                     headerImage="sap-icon://signature"                                   
+                                     url="https://172cfc0btrial-dev-logali-approuter.cfapps.eu10.hana.ondemand.com/logaligroupEmployees/index.html" >
+                            <TileContent footer="{i18n>btnSignOrder}"/>                                                                        
+                        </GenericTile>
+                    </content>
+                </Panel>
+            </content>
+        </Page>
+</mvc:View>
