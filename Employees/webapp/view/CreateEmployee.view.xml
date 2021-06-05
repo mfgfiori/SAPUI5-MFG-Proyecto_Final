@@ -53,9 +53,10 @@
                                         <Slider value="{odataEmployee>/netSalary}"
                                                 min="{odataEmployee>/salaryMin}" 
                                                 max="{odataEmployee>/salaryMax}"
-                                                step="100" inputsAsTooltips="true" showAdvancedTooltip="true" enableTickmarks="true"
-                                                width="100%" progress="true" class="sapUiSmallMarginBottom">
-                                                <ResponsiveScale tickmarksBetweenLabels="100"/>
+                                                step="{= ${odataEmployee>/type} === '0' ? 5000 : ${odataEmployee>/type} === '1' ? 100 : 10000}"
+                                                inputsAsTooltips="true" showAdvancedTooltip="true" enableTickmarks="true"
+                                                width="100%" progress="true" class="sapUiSmallMarginBottom">             
+                                                <ResponsiveScale tickmarksBetweenLabels="100"/>                                                                         
                                         </Slider>                          
                                         <Label text="{i18n>creationDate}" required="true"/>                                        
 										<DatePicker valueState="{odataEmployee>/creationDateState}" change="additionalInfoValidation" dateValue="{odataEmployee>/creationDate}"/>
@@ -63,23 +64,115 @@
 							    </WizardStep>
                                 <WizardStep id="OptionalInfoStep"
                                             validated="true"
-                                            activate="optionalStepActivation"
+                                            activate="optionalInfoStepActivation"                                
                                             title="{i18n>optionalInfo}">
                                     <MessageStrip class="sapUiSmallMarginBottom"
                                             text="{i18n>infoEmployeeStep3}"
                                             showIcon="true"/>
                                     <Label text="{i18n>comment}" width="100%"></Label>
-                                    <TextArea value="" width="100%"></TextArea>                                
+                                    <TextArea value="" width="100%"></TextArea>  
+                                    <UploadCollection id="uploadCollection"
+                                                      maximumFilenameLength="55"
+                                                      maximumFileSize="10"
+                                                      multiple="true"
+                                                      sameFilenameAllowed="true"
+                                                      instantUpload="true"
+                                                      uploadUrl="/sap/opu/odata/sap/ZEMPLOYEES_SRV/Attachments"
+                                                      change="onFileChange"
+                                                      uploadComplete="onFileUploadComplete"
+                                                      beforeUploadStarts="onFileBeforeUpload"
+                                                      fileDeleted="onFileDeleted"/>
+
                                 </WizardStep>
                             </Wizard>
                         </content>
                         <footer>
                             <OverflowToolbar>
                                 <ToolbarSpacer/>
-                                <Button text="Cancel" press="onCancel"/>
+                                <Button text="{i18n>cancel}" press="onCancel"/>
                             </OverflowToolbar>
                         </footer> 
                     </Page>
+
+                    <Page id="wizardReviewPage" showHeader="false">
+                        <content>
+                            <form:SimpleForm
+                                    title="{i18n>typeEmployee}"
+                                    minWidth="1024"
+                                    editable="false"
+                                    layout="ResponsiveGridLayout">
+                                <form:content>
+                                    <Label text="{i18n>type}"/>
+                                    <Text  text="{odataEmployee>/descType}"/>
+                                    <Link press="editStepOne" text="Edit" />
+                                </form:content>
+                            </form:SimpleForm>
+
+  <!--                          <form:SimpleForm
+                                    title="2. Product Information"
+                                    minWidth="1024"
+                                    editable="false"
+                                    layout="ResponsiveGridLayout">
+                                <form:content>
+                                    <Label text="Name"/>
+                                    <Text id="ProductNameChosen" text="{/productName}"/>
+                                    <Label text="Weight"/>
+                                    <Text id="ProductWeightChosen" text="{/productWeight}"/>
+                                    <Label text="Manufacturer"/>
+                                    <Text id="ProductManufacturerChosen" text="{/productManufacturer}"/>
+                                    <Label text="Description"/>
+                                    <Text id="ProductDescriptionChosen" text="{/productDescription}"/>
+                                    <Link press="editStepTwo" text="Edit" />
+                                </form:content>
+                            </form:SimpleForm>
+
+                            <form:SimpleForm
+                                    title="3. Optional Information"
+                                    minWidth="1024"
+                                    editable="false"
+                                    layout="ResponsiveGridLayout">
+                                <form:content>
+                                    <Label text="Some text"/>
+                                    <Text text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                    tempor incididunt ut labore et dolore magna aliqua. "/>
+                                    <Label text="Manufacturing Date"/>
+                                    <Text id="ManufacturingDate" text="{/manufacturingDate}"/>
+                                    <Label text="Availability"/>
+                                    <Text id="AvailabilityChosen" text="{/availabilityType}"/>
+                                    <Label text="Size"/>
+                                    <HBox>
+                                        <Text id="Size" text="{/size}"/>
+                                        <Text id="Size2" class="sapUiTinyMarginBegin" text="{/measurement}"/>
+                                    </HBox>
+                                    <Link press="editStepThree" text="Edit" />
+                                </form:content>
+                            </form:SimpleForm>
+
+                            <form:SimpleForm
+                                    title="4. Pricing"
+                                    minWidth="1024"
+                                    editable="false"
+                                    layout="ResponsiveGridLayout">
+                                <form:content>
+                                    <Label text="Price"/>
+                                    <Text id="ProductPriceChosen" text="{/productPrice}"/>
+                                    <Label text="Discount Group"/>
+                                    <Text id="DiscountGroupChosen" text="{/discountGroup}"/>
+                                    <Label text="VAT Included"/>
+                                    <Text id="ProductVATChosen" text="{/productVAT}"/>
+                                    <Link press="editStepFour" text="Edit" />
+                                </form:content>
+                            </form:SimpleForm> -->
+                        </content>
+                        <footer>
+                            <Bar>
+                                <contentRight>
+                                    <Button text="{i18n>submit}" press="onSubmit"/>
+                                    <Button text="{i18n>cancel}" press="onCancel"/>
+                                </contentRight>
+                            </Bar>
+                        </footer>
+				    </Page>
                 </pages>
             </NavContainer>          
         </content>                  

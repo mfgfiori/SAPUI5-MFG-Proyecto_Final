@@ -17,6 +17,9 @@ sap.ui.define([
         return Controller.extend("projectfinal.Employees.controller.CreateEmployee", {
             onBeforeRendering: function () {
                 this._wizard = this.byId("CreateEmployeeWizard");
+                this._oNavContainer = this.byId("wizardNavContainer");
+                this._oWizardContentPage = this.byId("wizardContentPage");
+
                 //Creo el modelo en el que guardaré los datos del empleado
                 this._model = new sap.ui.model.json.JSONModel({});
                 //Le indico a la vista que éste será su modelo.                
@@ -149,6 +152,33 @@ sap.ui.define([
                         this._model.setProperty("/dniState","Error");
                     }
                 }
-            }
+            },
+
+            wizardCompletedHandler: function(){
+	            this._oNavContainer.to(this.byId("wizardReviewPage"));
+            },
+            _handleNavigationToStep: function (iStepNumber) {
+                var fnAfterNavigate = function () {
+                    this._wizard.goToStep(this._wizard.getSteps()[iStepNumber]);
+                    this._oNavContainer.detachAfterNavigate(fnAfterNavigate);
+                }.bind(this);
+
+                this._oNavContainer.attachAfterNavigate(fnAfterNavigate);                
+                this._oNavContainer.backToPage(this._oWizardContentPage.getId());
+            },
+            editStepOne: function () {
+                this._handleNavigationToStep(0);
+            },
+
+            editStepTwo: function () {
+                this._handleNavigationToStep(1);
+            },
+
+            editStepThree: function () {
+                this._handleNavigationToStep(2);
+            },            
+            onSubmit: function () {
+                
+            },
         });
     });
