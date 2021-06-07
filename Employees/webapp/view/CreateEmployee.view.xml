@@ -70,19 +70,17 @@
                                             text="{i18n>infoEmployeeStep3}"
                                             showIcon="true"/>
                                     <Label text="{i18n>comment}" width="100%"></Label>
-                                    <TextArea value="" width="100%"></TextArea>  
+                                    <TextArea value="{odataEmployee>/comments}" width="100%"/>
                                     <UploadCollection id="uploadCollection"
                                                       maximumFilenameLength="55"
                                                       maximumFileSize="10"
                                                       multiple="true"
                                                       sameFilenameAllowed="true"
-                                                      instantUpload="true"
+                                                      instantUpload="false"
                                                       uploadUrl="/sap/opu/odata/sap/ZEMPLOYEES_SRV/Attachments"
-                                                      change="onFileChange"
-                                                      uploadComplete="onFileUploadComplete"
+                                                      change="onFileChange"                                                      
                                                       beforeUploadStarts="onFileBeforeUpload"
-                                                      fileDeleted="onFileDeleted"/>
-
+                                                      noDataDescription="{i18n>noFiles}"/>                                                        	
                                 </WizardStep>
                             </Wizard>
                         </content>
@@ -93,76 +91,57 @@
                             </OverflowToolbar>
                         </footer> 
                     </Page>
-
                     <Page id="wizardReviewPage" showHeader="false">
                         <content>
                             <form:SimpleForm
-                                    title="{i18n>typeEmployee}"
+                                    title="1. {i18n>typeEmployee}"
                                     minWidth="1024"
                                     editable="false"
                                     layout="ResponsiveGridLayout">
                                 <form:content>
                                     <Label text="{i18n>type}"/>
                                     <Text  text="{odataEmployee>/descType}"/>
-                                    <Link press="editStepOne" text="Edit" />
+                                    <Link press="editStepOne" text="{i18n>edit}" />
                                 </form:content>
                             </form:SimpleForm>
-
-  <!--                          <form:SimpleForm
-                                    title="2. Product Information"
-                                    minWidth="1024"
-                                    editable="false"
-                                    layout="ResponsiveGridLayout">
-                                <form:content>
-                                    <Label text="Name"/>
-                                    <Text id="ProductNameChosen" text="{/productName}"/>
-                                    <Label text="Weight"/>
-                                    <Text id="ProductWeightChosen" text="{/productWeight}"/>
-                                    <Label text="Manufacturer"/>
-                                    <Text id="ProductManufacturerChosen" text="{/productManufacturer}"/>
-                                    <Label text="Description"/>
-                                    <Text id="ProductDescriptionChosen" text="{/productDescription}"/>
-                                    <Link press="editStepTwo" text="Edit" />
-                                </form:content>
-                            </form:SimpleForm>
-
                             <form:SimpleForm
-                                    title="3. Optional Information"
+                                    title="2. {i18n>dataEmployee}"
                                     minWidth="1024"
                                     editable="false"
                                     layout="ResponsiveGridLayout">
                                 <form:content>
-                                    <Label text="Some text"/>
-                                    <Text text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                    tempor incididunt ut labore et dolore magna aliqua. "/>
-                                    <Label text="Manufacturing Date"/>
-                                    <Text id="ManufacturingDate" text="{/manufacturingDate}"/>
-                                    <Label text="Availability"/>
-                                    <Text id="AvailabilityChosen" text="{/availabilityType}"/>
-                                    <Label text="Size"/>
-                                    <HBox>
-                                        <Text id="Size" text="{/size}"/>
-                                        <Text id="Size2" class="sapUiTinyMarginBegin" text="{/measurement}"/>
-                                    </HBox>
-                                    <Link press="editStepThree" text="Edit" />
+                                    <Label text="{i18n>firstName}"/>
+                                    <Text  text="{odataEmployee>/firstName}"/>
+                                    <Label text="{i18n>lastName}"/>
+                                    <Text  text="{odataEmployee>/lastName}"/>
+                                    <Label text="{= ${odataEmployee>/type} === '1' ? ${i18n>CIF} : ${i18n>DNI}}"/>
+                                    <Text  text="{odataEmployee>/dni}"/>
+                                    <Label text="{= ${odataEmployee>/type} === '1' ? ${i18n>priceDay} : ${i18n>salaryBrut}}"/> 
+                                    <Text  text="{odataEmployee>/netSalary}"/>
+                                    <Label text="{i18n>creationDate}"/>       
+                                    <Text  text="{path:'odataEmployee>/creationDate',type:'sap.ui.model.type.Date'}"/>                                 									
+                                    <Link press="editStepTwo" text="{i18n>edit}" />
                                 </form:content>
                             </form:SimpleForm>
-
-                            <form:SimpleForm
-                                    title="4. Pricing"
+                           <form:SimpleForm
+                                    title="3. {i18n>optionalInfo}"
                                     minWidth="1024"
                                     editable="false"
                                     layout="ResponsiveGridLayout">
                                 <form:content>
-                                    <Label text="Price"/>
-                                    <Text id="ProductPriceChosen" text="{/productPrice}"/>
-                                    <Label text="Discount Group"/>
-                                    <Text id="DiscountGroupChosen" text="{/discountGroup}"/>
-                                    <Label text="VAT Included"/>
-                                    <Text id="ProductVATChosen" text="{/productVAT}"/>
-                                    <Link press="editStepFour" text="Edit" />
+                                    <Label text="{i18n>comment}"/>
+                                    <Text text="{odataEmployee>/comments}"/>
+                                    <Label text="{i18n>attachments}"/>
+                                    <Text text="{odataEmployee>/nFiles} {i18n>files}"/>
+                                    <Label />
+                                    <List items="{path: 'odataEmployee>/files'}" >
+                                        <items>
+                                            <StandardListItem title="{odataEmployee>DocName}" />
+                                        </items>
+                                    </List>
+                                    <Link press="editStepThree" text="{i18n>edit}" />
                                 </form:content>
-                            </form:SimpleForm> -->
+                            </form:SimpleForm>
                         </content>
                         <footer>
                             <Bar>
