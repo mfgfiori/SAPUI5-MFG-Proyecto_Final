@@ -17,58 +17,43 @@ sap.ui.define([
         "use strict";
 
         return Controller.extend("projectfinal.Employees.controller.CreateEmployee", {
-            onBeforeRendering: function () {
-                this._wizard = this.byId("CreateEmployeeWizard");
-                this._oNavContainer = this.byId("wizardNavContainer");
-                this._oWizardContentPage = this.byId("wizardContentPage");
 
-                // //Creo el modelo en el que guardaré los datos del empleado
-                // this._model = new sap.ui.model.json.JSONModel({});
-                // //Le indico a la vista que éste será su modelo.                
-                // this.getView().setModel(this._model, "odataEmployee");
-                // this._setEmptyValue("/type");
-                // this._setEmptyValue("/descType");
-                // this._setEmptyValue("/netSalary");
-                // this._setEmptyValue("/firstName");
-                // this._setEmptyValue("/lastName");
-                // this._setEmptyValue("/dni");
-                // //this._setEmptyValue("/creationDate"); 
-
-                //Se reseta los pasos por si ya se ha ejecutado la aplicacion antes
+            _onInitWizard: function(){
+                //Inicializar el wizard
                 var oFirstStep = this._wizard.getSteps()[0];
                 this._wizard.discardProgress(oFirstStep);
                 // scroll to top
                 this._wizard.goToStep(oFirstStep);
                 // invalidate first step
                 oFirstStep.setValidated(false);
-            },
+            },    
 
-            onInit: function () {
-                var oJSONConfigEmpl = new JSONModel();
-                oJSONConfigEmpl.loadData("./model/json/configEmployee.json", false);
-                this.getView().setModel(oJSONConfigEmpl, "jsonConfigEmployee");
+            onBeforeRendering: function () {
+                this._wizard = this.byId("CreateEmployeeWizard");
+                this._oNavContainer = this.byId("wizardNavContainer");
+                this._oWizardContentPage = this.byId("wizardContentPage");
 
                 //Creo el modelo en el que guardaré los datos del empleado
                 this._model = new sap.ui.model.json.JSONModel({});
-                //Le indico a la vista que éste será su modelo.                
+                // Le indico a la vista que éste será su modelo.                
                 this.getView().setModel(this._model, "odataEmployee");
-                this._model.attachRequestCompleted(null, function () {
-                    this._model.setProperty("/firstName", "Hola");
-                    // this.model.setProperty("/selectedDeliveryMethod", "Standard Delivery");
-                    // this.model.setProperty("/differentDeliveryAddress", false);
-                    // this.model.setProperty("/CashOnDelivery", {});
-                    // this.model.setProperty("/BillingAddress", {});
-                    // this.model.setProperty("/CreditCard", {});
-                    // this.calcTotal();
-                    this._model.updateBindings();
-                }.bind(this));
-
+                //Inicializo el wizard.
+                this._onInitWizard();
+            },
+            onInit: function () {
+//              Cargo el modelo para los datos configuración por tipo de empleado                 
+                var oJSONConfigEmpl = new JSONModel();
+                oJSONConfigEmpl.loadData("./model/json/configEmployee.json", false);
+                this.getView().setModel(oJSONConfigEmpl, "jsonConfigEmployee");
             },
 
             onCancel: function () {
                 MessageBox.confirm(this.oView.getModel("i18n").getResourceBundle().getText("cancelCreateEmployee"), {
                     onClose: function (oAction) {
                         if (oAction === "OK") {
+                            //Inicializo el wizard, para que al volver a pulsar "Crear Empleado" esté inicializado.                            
+                            this._onInitWizard();                        
+                            //Navego al visata MainView                            
                             var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
                             oRouter.navTo("RouteMainView", {}, true);
                         }
@@ -77,34 +62,39 @@ sap.ui.define([
             },
 
             toNextStep: function (oEvent) {
-
+                //Obtengo el tipo de empleado seleccionado        
                 var type = oEvent.getSource().data("typeEmpl");
-
+                 
+                //Busco en el Modelo de configuración los datos por defecto del mismo
                 var oModel = this.getView().getModel("jsonConfigEmployee");
                 const employee = oModel.getData().TypeEmployee.filter(x => x.Type === type);
-
-                console.log(employee[0]);
+            
                 if (Array.isArray(employee) && !employee.length) {
                 } else {
-                    this.salaryMin = employee[0].MinSalary;
-                    this.salaryMax = employee[0].MaxSalary;
+                    // this.salaryMin = employee[0].MinSalary;
+                    // this.salaryMax = employee[0].MaxSalary;
                     this._model.setProperty("/type", employee[0].Type);
                     this._model.setProperty("/descType", employee[0].DescEmployee);
-
                     this._model.setProperty("/salaryMin", employee[0].MinSalary);
                     this._model.setProperty("/salaryMax", employee[0].MaxSalary);
                     this._model.setProperty("/netSalary", employee[0].NetSalary);
+                    //Limpiamos las demás propiedades del modelo, por si ya se creó un empleado anteriormente
+                    this._model.setProperty("/firstName", "");
+                    this._model.setProperty("/lastName", "");
+                    this._model.setProperty("/dni", "");
+                    this._model.setProperty("/creationDate", null);
+                    this._model.setProperty("/comments", "");
+                    this._model.setProperty("/attachments", {});
+                    this.getView().setModel(this._model, "odataEmployee");
 
                     this._wizard.setCurrentStep(this.byId("DataEmployeeStep"));
                 }
-            },
-            _setEmptyValue: function (sPath) {
-                this._model.setProperty(sPath, " ");
             },
 
             additionalInfoValidation: function (oEvent, callback) {
                 var dataEmployee = this._model.getData();
                 var error = false;
+                var isValid;
 
                 if (!dataEmployee.firstName) {
                     this._model.setProperty("/firstNameState", "Error");
@@ -124,7 +114,11 @@ sap.ui.define([
                     this._model.setProperty("/dniState", "Error");
                     error = true;
                 } else {
-                    this._model.setProperty("/dniState", "None");
+                    this.validateDNI(oEvent);
+                    var state = this._model.getProperty("/dniState");
+                    if (state == "Error") {
+                        error = true;                                           
+                    }                    
                 };
                 //Fecha de incorporación
                 if (!dataEmployee.creationDate) {
@@ -134,49 +128,50 @@ sap.ui.define([
                     this._model.setProperty("/creationDateState", "None");
                 };
                 if (error) {
+                    isValid = false;
                     this._wizard.invalidateStep(this.byId("DataEmployeeStep"));
                 } else {
+                    isValid = true;
                     this._wizard.validateStep(this.byId("DataEmployeeStep"));
                 }
                 //Si hay callback se devuelve el valor isValid
                 if (callback) {
-                    callback(error);
+                    callback(isValid);
                 }
             },
-            //Función para validar el dni
-            validateDNI: function (oEvent) {
+            validateDNI: function (oEvent){
                 //Se comprueba si es dni o cif. En caso de dni, se comprueba su valor. Para ello se comprueba que el tipo no sea "autonomo"
-                if (this._model.getProperty("type") !== "1") {
-                    var dni = oEvent.getParameter("value");
+                if(this._model.getProperty("type") !== "1"){
+//                    var dni = oEvent.getParameter("value");
+                    var dni = this._model.getProperty("/dni");
                     var number;
                     var letter;
                     var letterList;
                     var regularExp = /^\d{8}[a-zA-Z]$/;
                     //Se comprueba que el formato es válido
-                    if (regularExp.test(dni) === true) {
+                    if(regularExp.test (dni) === true){
                         //Número
-                        number = dni.substr(0, dni.length - 1);
+                        number = dni.substr(0,dni.length-1);
                         //Letra
-                        letter = dni.substr(dni.length - 1, 1);
+                        letter = dni.substr(dni.length-1,1);
                         number = number % 23;
-                        letterList = "TRWAGMYFPDXBNJZSQVHLCKET";
-                        letterList = letterList.substring(number, number + 1);
-                        if (letterList !== letter.toUpperCase()) {
-                            this._model.setProperty("/dniState", "Error");
-                        } else {
-                            this._model.setProperty("/dniState", "None");
-                            this.additionalInfoValidation();
-                        }
-                    } else {
-                        this._model.setProperty("/dniState", "Error");
+                        letterList="TRWAGMYFPDXBNJZSQVHLCKET";
+                        letterList=letterList.substring(number,number+1);
+                    if (letterList !== letter.toUpperCase()) {
+                        this._model.setProperty("/dniState","Error");
+                    }else{
+                        this._model.setProperty("/dniState","None");
+//                        this.dataEmployeeValidation();
+                    }
+                    }else{
+                        this._model.setProperty("/dniState","Error");
                     }
                 }
             },
-
             wizardCompletedHandler: function (oEvent) {
                 //Se comprueba que no haya error
-                this.additionalInfoValidation(oEvent, function (isFail) {
-                    if (!isFail) {
+                this.additionalInfoValidation(oEvent, function (isValid) {
+                    if (isValid) {
                         //Se navega a la página review
                         var wizardNavContainer = this.byId("wizardNavContainer");
                         wizardNavContainer.to(this.byId("wizardReviewPage"));
@@ -190,7 +185,7 @@ sap.ui.define([
                         if (numFiles > 0) {
                             var arrayFiles = [];
                             for (var i in files) {
-                                arrayFiles.push({DocName:files[i].getFileName(),MimeType:files[i].getMimeType()});
+                                arrayFiles.push({ DocName: files[i].getFileName(), MimeType: files[i].getMimeType() });
                             }
                             this._model.setProperty("/files", arrayFiles);
                             console.log(this._model.getData());
@@ -198,7 +193,10 @@ sap.ui.define([
                             this._model.setProperty("/files", []);
                         }
                     } else {
-                        this._wizard.goToStep(this.byId("DataEmployeeStep"));
+                        var oNextStep = this._wizard.getSteps()[1];
+                         // scroll to top
+                        this._wizard.goToStep(oNextStep);            
+                        oNextStep.setValidated(false);                        
                     }
                 }.bind(this));
             },
@@ -238,8 +236,8 @@ sap.ui.define([
                 });
                 oEvent.getParameters().addHeaderParameter(oCustomerHeaderSlug);
             },
-	  
-            onStartUpload: function (oEvent) {         
+
+            onStartUpload: function (oEvent) {
                 var oUploadCollection = this.byId("uploadCollection");
                 oUploadCollection.upload();
             },
@@ -255,7 +253,7 @@ sap.ui.define([
                 body.Dni = json.dni;
                 body.CreationDate = json.creationDate;
                 body.Comments = json.comments;
-                
+
                 body.UserToSalary = [{
                     Ammount: parseFloat(json.netSalary).toString(),
                     Comments: '',
@@ -272,10 +270,11 @@ sap.ui.define([
                                 //Se vuelve al wizard
                                 var wizardNavContainer = this.byId("wizardNavContainer");
                                 wizardNavContainer.back();
-                                //Regresamos al menú principal
-                                //Se obtiene el conjuntos de routers del programa
+                                //Inicializo el wizard, para que al volver a pulsar "Crear Empleado" esté inicializado.                            
+                                this._onInitWizard();       
+                                //Obtengo las rutas
                                 var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-                                //Se navega hacia el router "menu"
+                                //Se navega hacia MainView
                                 oRouter.navTo("RouteMainView", {}, true);
                             }.bind(this)
                         });
