@@ -2,11 +2,22 @@
           xmlns:mvc="sap.ui.core.mvc" 
           displayBlock="true" 
           xmlns="sap.m"
-          xmlns:l="sap.ui.layout"
-	      xmlns:core="sap.ui.core">
-        <Page id="page" title="{i18n>title}">
-            <content>
-            <Text text="Functional 'Show Employees'. COMING SOON!! Code in building..."/>
-            </content>
+          xmlns:core="sap.ui.core"
+          xmlns:f="sap.f">
+        <Page id="page" showHeader="false">
+        <content>
+            <f:FlexibleColumnLayout id="fcl" backgroundDesign="Solid" layout="TwoColumnsMidExpanded">
+                <f:beginColumnPages>
+                    <mvc:XMLView id="masterEmployeeView" viewName="projectfinal.Employees.view.MasterEmployee"></mvc:XMLView>
+                </f:beginColumnPages>
+                <f:midColumnPages>
+                     <mvc:XMLView id="detailsEmployeeView" viewName="projectfinal.Employees.view.DetailsEmployee"></mvc:XMLView>
+                </f:midColumnPages>
+                <f:endColumnPages>
+                    <Page>
+                    </Page>
+                </f:endColumnPages>
+            </f:FlexibleColumnLayout>                
+        </content>
         </Page>
 </mvc:View>    

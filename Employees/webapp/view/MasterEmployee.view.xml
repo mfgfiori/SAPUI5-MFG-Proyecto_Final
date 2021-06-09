@@ -1,0 +1,21 @@
+<mvc:View controllerName="projectfinal.Employees.controller.MasterEmployee" 
+          xmlns:mvc="sap.ui.core.mvc" 
+          displayBlock="true" 
+          xmlns="sap.m"
+          xmlns:l="sap.ui.layout"
+	      xmlns:core="sap.ui.core">
+        <Page id="page" showHeader="false">
+            <content>
+                <Toolbar class="sapUiTinyMarginTop">
+					<Button icon="sap-icon://nav-back" press="onButtonBack"></Button>
+					<SearchField id='valueSearch' liveChange="onSearchEmployee" width="100%" />
+				</Toolbar>
+                <List id="listEmployees" items="{path:'odataModel>/Users',filters:[{path:'SapId',operator:'EQ',value1:'mfdezgarcia@gmail.com'}]}">
+					<items>
+						<StandardListItem title="{odataModel>FirstName} {odataModel>LastName}" description="{odataModel>Dni}" type="Navigation"
+						                  press="onSelectEmployee"/>
+					</items>
+				</List>
+            </content>
+        </Page>
+</mvc:View>
