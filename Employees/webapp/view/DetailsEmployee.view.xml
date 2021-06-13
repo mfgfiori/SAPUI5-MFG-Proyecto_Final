@@ -54,18 +54,23 @@
 							</UploadCollection>
 						</IconTabFilter>
 						<IconTabFilter text="{i18n>historic}" icon="sap-icon://money-bills" 
-                                       design="Horizontal" key="itabSalary">            
+                                       design="Horizontal" 
+                                       key="itabSalary"  
+                                       class="sapUiResponsiveContentPadding">            
                              <suite:Timeline id="idTimeLine" 
                                             height="100%"                                                                                                                       
-                                            content="{odataModel>UserToSalary}"                                                                       
-                                            enableScroll="true" 
+                                            content="{odataModel>UserToSalary}"       
+                                            enableModelFilter="true"                               
                                             lazyLoading="true"
+                                            growingThreshold="10"                                                                                                              
                                             showHeaderBar="false"                                             
-                                            groupBy="CreationDate"                         
-                                            groupByType="Year"                                                                                   
-                                            sort="true"
-                                            sortOldestFirst="true"
-                                            enableDoubleSided="true">
+                                            groupBy="CreationDate"          
+                                            groupByType="Year"               
+                                            dateTimePath=""
+                                            enableDoubleSided="true"
+                                            sort="false"                                            
+                                            sortOldestFirst="false"
+                                            >
                                 <suite:content>
                                     <suite:TimelineItem icon="sap-icon://circle-task" 
                                                         text="{odataModel>Comments}" 

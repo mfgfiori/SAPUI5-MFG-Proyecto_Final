@@ -24,7 +24,7 @@ sap.ui.define([
                 this._wizard.discardProgress(oFirstStep);
                 // scroll to top
                 this._wizard.goToStep(oFirstStep);
-                // invalidate first step
+                // Invalido el primer paso
                 oFirstStep.setValidated(false);
             },    
 
@@ -40,6 +40,7 @@ sap.ui.define([
                 //Inicializo el wizard.
                 this._onInitWizard();
             },
+                        
             onInit: function () {
 //              Cargo el modelo para los datos configuración por tipo de empleado                 
                 var oJSONConfigEmpl = new JSONModel();
@@ -53,7 +54,7 @@ sap.ui.define([
                         if (oAction === "OK") {
                             //Inicializo el wizard, para que al volver a pulsar "Crear Empleado" esté inicializado.                            
                             this._onInitWizard();                        
-                            //Navego al visata MainView                            
+                            //Navego al vista MainView                            
                             var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
                             oRouter.navTo("RouteMainView", {}, true);
                         }
@@ -71,8 +72,7 @@ sap.ui.define([
             
                 if (Array.isArray(employee) && !employee.length) {
                 } else {
-                    // this.salaryMin = employee[0].MinSalary;
-                    // this.salaryMax = employee[0].MaxSalary;
+
                     this._model.setProperty("/type", employee[0].Type);
                     this._model.setProperty("/descType", employee[0].DescEmployee);
                     this._model.setProperty("/salaryMin", employee[0].MinSalary);
@@ -86,23 +86,24 @@ sap.ui.define([
                     this._model.setProperty("/comments", "");
                     this._model.setProperty("/attachments", {});
                     this.getView().setModel(this._model, "odataEmployee");
-
+                    //Le indico al wizard que vaya al paso 1.
                     this._wizard.setCurrentStep(this.byId("DataEmployeeStep"));
                 }
             },
 
             additionalInfoValidation: function (oEvent, callback) {
+                //Esta rutina valida los datos introducidos por el usuario                
                 var dataEmployee = this._model.getData();
                 var error = false;
                 var isValid;
-
+                //Nombre
                 if (!dataEmployee.firstName) {
                     this._model.setProperty("/firstNameState", "Error");
                     error = true;
                 } else {
                     this._model.setProperty("/firstNameState", "None");
                 };
-
+                //Apellido
                 if (!dataEmployee.lastName) {
                     this._model.setProperty("/lastNameState", "Error");
                     error = true;
@@ -127,6 +128,7 @@ sap.ui.define([
                 } else {
                     this._model.setProperty("/creationDateState", "None");
                 };
+                // Si hay error se invalida el paso del Wizard para que no pueda continuar                
                 if (error) {
                     isValid = false;
                     this._wizard.invalidateStep(this.byId("DataEmployeeStep"));
@@ -168,6 +170,7 @@ sap.ui.define([
                     }
                 }
             },
+
             wizardCompletedHandler: function (oEvent) {
                 //Se comprueba que no haya error
                 this.additionalInfoValidation(oEvent, function (isValid) {
@@ -200,6 +203,7 @@ sap.ui.define([
                     }
                 }.bind(this));
             },
+            
             _handleNavigationToStep: function (iStepNumber) {
                 var fnAfterNavigate = function () {
                     this._wizard.goToStep(this._wizard.getSteps()[iStepNumber]);
@@ -243,8 +247,9 @@ sap.ui.define([
             },
 
             onSubmit: function () {
+                //Recupero los datos del modelo 
                 var json = this.getView().getModel("odataEmployee").getData();
-
+                //Construyo el body con los datos necesarios para la llamada create del ODATA
                 var body = {};
                 body.SapId = this.getOwnerComponent().SapId;
                 body.Type = json.type;
@@ -259,11 +264,12 @@ sap.ui.define([
                     Comments: '',
                     Waers: "EUR"
                 }];
+
                 this.getView().setBusy(true);
+                //Se llama al modelo para crear el Empleado                
                 this.getView().getModel("odataModel").create("/Users", body, {
                     success: function (data) {
                         this.getView().setBusy(false);
-                        //Se almacena el nuevo usuario
                         this.newEmployee = data.EmployeeId;
                         sap.m.MessageBox.information(this.oView.getModel("i18n").getResourceBundle().getText("newEmployee") + ": " + this.newEmployee, {
                             onClose: function () {
@@ -278,6 +284,7 @@ sap.ui.define([
                                 oRouter.navTo("RouteMainView", {}, true);
                             }.bind(this)
                         });
+                        //Para subir los ficheros
                         this.onStartUpload();
 
                     }.bind(this),
