@@ -54,7 +54,7 @@ sap.ui.define([
             },
             downloadFile: function(oEvent){
                 var sPath = oEvent.getSource().getBindingContext("odataModel").getPath();
-                window.open("/sap/opu/odata/sap/ZEMPLOYEES_SRV"+sPath+"/$value");
+                window.open("/projectfinalEmployees/sap/opu/odata/sap/ZEMPLOYEES_SRV"+sPath+"/$value");
             },
             onDeleteEmployee: function(oEvent){
                 var oBundle = this.getView().getModel("i18n").getResourceBundle();

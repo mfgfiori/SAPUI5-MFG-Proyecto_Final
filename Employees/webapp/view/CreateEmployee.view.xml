@@ -77,7 +77,7 @@
                                                       multiple="true"
                                                       sameFilenameAllowed="true"
                                                       instantUpload="false"
-                                                      uploadUrl="/sap/opu/odata/sap/ZEMPLOYEES_SRV/Attachments"
+                                                      uploadUrl="/projectfinalEmployees/sap/opu/odata/sap/ZEMPLOYEES_SRV/Attachments"
                                                       change="onFileChange"                                                      
                                                       beforeUploadStarts="onFileBeforeUpload"
                                                       noDataDescription="{i18n>noFiles}"/>                                                        	
