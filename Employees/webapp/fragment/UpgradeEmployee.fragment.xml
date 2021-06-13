@@ -1,0 +1,14 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:form="sap.ui.layout.form">>
+<Panel width="auto" class="sapUiResponsiveMargin">
+	<content>
+			 <form:SimpleForm editable="true">
+                <Label text="{i18n>salary}" required="true"/>
+                <Input value="{odataSalary>/Ammount}" />  
+                <Label text="{i18n>date}" required="true"/>
+                <DatePicker dateValue="{odataSalary>/CreationDate}"/>                
+                <Label text="{i18n>comment}"/>      
+                <TextArea value="{odataSalary>/Comments}" width="100%"/>
+            </form:SimpleForm>    
+		</content>
+ </Panel>
+</core:FragmentDefinition>

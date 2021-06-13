@@ -73,11 +73,15 @@
                 "type": "sap.ui.model.odata.v2.ODataModel",
                 "settings": {
                     "defaultOperationMode": "Server",
-                    "defaultBindingMode": "OneWay",
-                    "defaultCountMode": "Request"
+                    "defaultBindingMode": "TwoWay",
+                    "defaultCountMode": "Request",
+                    "useBatch": false,
+                    "metadataUrlParams": {
+                    "sap-documentation": "heading"
+                    }            
                 },
                 "dataSource": "ZEMPLOYEES_SRV",
-                "preload": true
+                "preload": true                
             }
         },
         "resources": {

@@ -1,17 +1,19 @@
-<mvc:View controllerName="projectfinal.Employees.controller.DetailsEmployee" 
-          xmlns:mvc="sap.ui.core.mvc" 
-          displayBlock="true" 
+<mvc:View controllerName="projectfinal.Employees.controller.DetailsEmployee"
+          xmlns:mvc="sap.ui.core.mvc"
+          displayBlock="true"      
           xmlns="sap.m"
           xmlns:l="sap.ui.layout"
 	      xmlns:core="sap.ui.core"
-          xmlns:suite="sap.suite.ui.commons">
-        <Page id="page" showHeader="false">
-            <content>
-                <FlexBox id="noData" alignItems="Center" justifyContent="Center" height="100%">
+          xmlns:suite="sap.suite.ui.commons"
+          xmlns:f="sap.ui.layout.form"
+          core:require="{ DateTimeType: 'sap/ui/model/odata/type/DateTime'}">   
+        <Page id="noData" showHeader="false">
+                <FlexBox alignItems="Center" justifyContent="Center" height="100%">
 					<Text text="{i18n>selectEmployee}"></Text>
 				</FlexBox>
-                <Page id="detailEmployee" title="{i18n>detailEmployee}" visible="false">
-				<ObjectHeader 
+        </Page>               
+                <Page id="detailEmployee" title="{i18n>detailEmployee}" visible="false">      
+				<ObjectHeader
 					icon= "{= ${odataModel>Type}==='0' ? 'sap-icon://employee-pane' : ${odataModel>Type}==='1' ? 'sap-icon://employee' : 'sap-icon://leads' }"
 					title="{odataModel>FirstName} {odataModel>LastName}"
 					intro="{odataModel>Dni}"
@@ -21,10 +23,13 @@
 						<ObjectAttribute title="{i18n>type}" text="{= ${odataModel>Type} === '0' ? ${i18n>typeEmployee0} : ${odataModel>Type} === '1' ? ${i18n>typeEmployee1} : ${i18n>typeEmployee2}}" />
 						<ObjectAttribute title="{i18n>comment}" text="{odataModel>Comments}" />
 				</ObjectHeader>
-                <IconTabBar
-					class="sapUiResponsiveContentPadding">
+                <IconTabBar id="tabBar" 
+                            class="sapUiResponsiveContentPadding"                            
+                            select=".handleIconTabBarSelected"
+                            selectedKey="itabFiles">
 					<items>
-						<IconTabFilter design="Horizontal" icon="sap-icon://attachment" text="{i18n>files}">
+						<IconTabFilter design="Horizontal" icon="sap-icon://attachment" text="{i18n>files}" class="sapUiResponsiveContentPadding"
+                            key="itabFiles">
 							<UploadCollection id="uploadCollection"
                                               maximumFilenameLength="55"
                                               maximumFileSize="10"
@@ -33,9 +38,9 @@
                                               instantUpload="true"
                                               uploadUrl="/sap/opu/odata/sap/ZEMPLOYEES_SRV/Attachments"
                                               items="{odataModel>UserToAttachment}"
-                                              change="onFileChange"                                                                                                                                      
+                                              change="onFileChange"
                                               uploadComplete="onUploadComplete"
-                                              beforeUploadStarts="onFileBeforeUpload"                                        
+                                              beforeUploadStarts="onFileBeforeUpload"
                                               fileDeleted="onFileDeleted"
                                               noDataDescription="{i18n>noFiles}">
                                 <items>
@@ -48,26 +53,29 @@
                                 </items>
 							</UploadCollection>
 						</IconTabFilter>
-						<IconTabFilter text="{i18n>historic}" icon="sap-icon://money-bills" design="Horizontal" >
-							<suite:Timeline
-								enableDoubleSided="true"
-								groupByType="Year"
-								groupBy="CreationDate"
-								showHeaderBar="false"
-								enableScroll="false"
-								height="100%"
-								sortOldestFirst="true"
-								content="{odataModel>UserToSalary}">
-								<suite:content>
-									<suite:TimelineItem
-										userName="{parts:[{path:'odataModel>Ammount'},{path:'odataModel>Waers'}],
-									  			   type: 'sap.ui.model.type.Currency',
-											  	   formatOptions: {showMeasure: false}}"
-										icon="sap-icon://circle-task"
-										text="{odataModel>Comments}"
-										dateTime="{odataModel>CreationDate}"/>									
-								</suite:content>
-							</suite:Timeline>
+						<IconTabFilter text="{i18n>historic}" icon="sap-icon://money-bills" 
+                                       design="Horizontal" key="itabSalary">            
+                             <suite:Timeline id="idTimeLine" 
+                                            height="100%"                                                                                                                       
+                                            content="{odataModel>UserToSalary}"                                                                       
+                                            enableScroll="true" 
+                                            lazyLoading="true"
+                                            showHeaderBar="false"                                             
+                                            groupBy="CreationDate"                         
+                                            groupByType="Year"                                                                                   
+                                            sort="true"
+                                            sortOldestFirst="true"
+                                            enableDoubleSided="true">
+                                <suite:content>
+                                    <suite:TimelineItem icon="sap-icon://circle-task" 
+                                                        text="{odataModel>Comments}" 
+                                                        dateTime="{odataModel>CreationDate}"
+                                                        userName="{parts:[{path:'odataModel>Ammount'},
+                                                                          {path:'odataModel>Waers'}], 
+                                                                   type: 'sap.ui.model.type.Currency', 
+                                                                   formatOptions: {showMeasure: false}}"/>
+                                    </suite:content>
+                            </suite:Timeline>
 						</IconTabFilter>
 					</items>
 				</IconTabBar>
@@ -77,8 +85,6 @@
 						<Button text="{i18n>deleteEmployee}" press="onDeleteEmployee"></Button>
 						<Button text="{i18n>upgradeEmployee}" press="onUpgradeEmployee"></Button>
 					</Toolbar>
-				</footer>
-                </Page>
-            </content>
-        </Page>
+				</footer> 
+            </Page>                      
 </mvc:View>

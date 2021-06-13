@@ -15,8 +15,10 @@ sap.ui.define([
             showDetailsEmployee: function(category, nameEvent, oData) {
                 var detailView = this.getView().byId("detailsEmployeeView");   
                 var oFlexBox = detailView.byId("noData");
-                oFlexBox.setVisible(false);                
-                detailView.bindElement("odataModel>" + oData);
+                oFlexBox.setVisible(false);  
+                //const objContext = this.getView().getModel("odataModel").getContext("/Users(EmployeeId='213',SapId='mfdezgarcia%40gmail.com')/UserToSalary").getObject();
+
+                detailView.bindElement("odataModel>" + oData);                 
 
                 var detailEmployee = detailView.byId("detailEmployee");
                 detailEmployee.setVisible(true);    
