@@ -59,18 +59,14 @@
                                        class="sapUiResponsiveContentPadding">            
                              <suite:Timeline id="idTimeLine" 
                                             height="100%"                                                                                                                       
-                                            content="{odataModel>UserToSalary}"       
-                                            enableModelFilter="true"                               
-                                            lazyLoading="true"
+                                            content="{odataModel>UserToSalary}"                                                                                                                  
                                             growingThreshold="10"                                                                                                              
                                             showHeaderBar="false"                                             
                                             groupBy="CreationDate"          
-                                            groupByType="Year"               
-                                            dateTimePath=""
-                                            enableDoubleSided="true"
-                                            sort="false"                                            
-                                            sortOldestFirst="false"
-                                            >
+                                            groupByType="Year"                                                           
+                                            enableDoubleSided="true"                                            
+                                            sortOldestFirst="true"
+                                            enableScroll="false">                                            
                                 <suite:content>
                                     <suite:TimelineItem icon="sap-icon://circle-task" 
                                                         text="{odataModel>Comments}" 
